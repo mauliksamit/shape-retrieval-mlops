@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shape-retrieval
+  labels: {app: shape-retrieval}
+spec:
+  replicas: 2
+  selector:
+    matchLabels: {app: shape-retrieval}
+  template:
+    metadata:
+      labels: {app: shape-retrieval}
+    spec:
+      containers:
+        - name: api
+          image: shape-retrieval:latest
+          imagePullPolicy: IfNotPresent
+          ports: [{containerPort: 8000}]
+          envFrom: [{configMapRef: {name: shape-retrieval-config}}]
+          livenessProbe: {httpGet: {path: /health, port: 8000}, initialDelaySeconds: 10, periodSeconds: 20}
+          readinessProbe: {httpGet: {path: /health, port: 8000}, initialDelaySeconds: 5, periodSeconds: 10}
+          resources:
+            requests: {cpu: "250m", memory: "512Mi"}
+            limits: {cpu: "2", memory: "2Gi"}

@@ -1,0 +1,16 @@
+# Local run: MLflow tracking server + retrieval API.
+services:
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.9.2
+    command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri /mlruns
+    ports: ["5000:5000"]
+    volumes: ["./mlruns:/mlruns"]
+  api:
+    build: .
+    ports: ["8000:8000"]
+    volumes: ["./artifacts:/app/artifacts", "./configs:/app/configs"]
+    environment:
+      INDEX_PATH: artifacts/index.faiss
+      METADATA_PATH: artifacts/metadata.json
+      MODEL: pointnet
+    depends_on: [mlflow]

@@ -1,0 +1,18 @@
+# Local Airflow (standalone): webserver + scheduler, LocalExecutor, SQLite.
+# Run: cd airflow && docker compose up
+# UI: http://localhost:8080 (airflow/airflow). DAG: shape_retrieval.
+# The repo root (..) is mounted at /opt/repo so DAG tasks run the real scripts.
+services:
+  airflow:
+    image: apache/airflow:2.8.1-python3.10
+    command: bash -c "airflow db migrate && airflow users create --username airflow --password airflow --firstname M --lastname LOps --role Admin --email a@a.com || true && airflow standalone"
+    ports: ["8080:8080"]
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ..:/opt/repo
+      - ./mlruns:/opt/repo/mlruns
+    environment:
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      PYTHONPATH: /opt/repo

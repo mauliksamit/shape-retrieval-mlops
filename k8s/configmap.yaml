@@ -1,0 +1,12 @@
+# Demo config: model selection + artifact paths. Large binaries (.faiss/.pt)
+# stay out of the ConfigMap — mount via PVC or bake into the image for prod.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shape-retrieval-config
+data:
+  MODEL: "pointnet"
+  NUM_POINTS: "1024"
+  INDEX_PATH: "artifacts/index.faiss"
+  METADATA_PATH: "artifacts/metadata.json"
+  ENCODER_PATH: "artifacts/pointnet.pt"

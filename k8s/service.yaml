@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: shape-retrieval
+spec:
+  selector: {app: shape-retrieval}
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 8000
+      nodePort: 30080
